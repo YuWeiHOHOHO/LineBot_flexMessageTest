@@ -24,6 +24,10 @@ def callback():
 
     body = request.get_data(as_text=True)
     app.logger.info("Request body: " + body)
+    
+    # 我加了下面那一行
+    print(body)
+    # 我加了上面那一行
 
     try:
         handler.handle(body, signature)
