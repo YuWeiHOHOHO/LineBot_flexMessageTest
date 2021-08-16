@@ -3,9 +3,13 @@ import os
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from linebot.models import MessageEvent, TextMessage, TextSendMessage, ImageSendMessage
 
 import configparser
+
+import urllib
+import re
+import random
 
 app = Flask(__name__)
 
@@ -24,10 +28,6 @@ def callback():
 
     body = request.get_data(as_text=True)
     app.logger.info("Request body: " + body)
-    
-    # 我加了下面那一行
-    print(body)
-    # 我加了上面那一行
 
     try:
         handler.handle(body, signature)
@@ -36,13 +36,45 @@ def callback():
 
     return 'OK'
 
-# 學你說話
+# 請 pixabay 幫我們找圖
 @handler.add(MessageEvent, message=TextMessage)
-def echo(event):
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=event.message.text)
-    )
+def pixabay_isch(event):
+    
+    if event.source.user_id != "Udeadbeefdeadbeefdeadbeefdeadbeef":
+        try:
+            query = {'tbm': 'isch', 'q': event.message.text}
+            url = f"https://www.google.com/search?{urllib.parse.urlencode(query)}/"
+            headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36'}
+            
+            req = urllib.request.Request(url, headers = headers)
+            conn = urllib.request.urlopen(req)
+            
+            print('fetch page finish')
+            
+            pattern = 'img srcset="\S*\s\w*,'
+            img_list = []
+            
+            for match in re.finditer(pattern, str(conn.read())):
+                img_list.append(match.group()[12:-3])
+                
+            random_img_url = img_list[random.randint(0, len(img_list)+1)]
+            print('fetch img url finish')
+            print(random_img_url)
+            
+            line_bot_api.reply_message(
+                event.reply_token,
+                ImageSendMessage(
+                    original_content_url=random_img_url,
+                    preview_image_url=random_img_url
+                )
+            )
+        # 如果找不到圖，就學你說話
+        except:
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text="找不到您所要求的圖片")
+            )
+            pass
 
 if __name__ == "__main__":
     app.run()
