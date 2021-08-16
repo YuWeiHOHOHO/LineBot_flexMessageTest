@@ -36,7 +36,7 @@ def callback():
 
     return 'OK'
 
-# 請 pixabay 幫我們找圖
+# 請 google 幫我們找圖
 @handler.add(MessageEvent, message=TextMessage)
 def pixabay_isch(event):
     
@@ -51,7 +51,7 @@ def pixabay_isch(event):
             
             print('fetch page finish')
             
-            pattern = 'img srcset="\S*\s\w*,'
+            pattern = 'img data-src="\S*"'
             img_list = []
             
             for match in re.finditer(pattern, str(conn.read())):
@@ -68,7 +68,7 @@ def pixabay_isch(event):
                     preview_image_url=random_img_url
                 )
             )
-        # 如果找不到圖，就學你說話
+        # 如果找不到圖，就說"找不到您所要求的圖片"
         except:
             line_bot_api.reply_message(
                 event.reply_token,
