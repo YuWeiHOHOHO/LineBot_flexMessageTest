@@ -2,12 +2,12 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 
 sched = BlockingScheduler()
 
-@sched.scheduled_job('interval', minutes=3)
-def timed_job():
-    print('This job is run every three minutes.')
-
-@sched.scheduled_job('cron', day_of_week='mon-fri', hour=17)
+@sched.scheduled_job('cron', day_of_week='mon-fri', minute='*/20')
 def scheduled_job():
-    print('This job is run every weekday at 5pm.')
+    url = "https://你-APP-的名字.herokuapp.com/"
+    conn = urllib.request.urlopen(url)
+        
+    for key, value in conn.getheaders():
+        print(key, value)
 
 sched.start()
