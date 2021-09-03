@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 import os
-from flask import Flask, request, abort
+from flask import Flask, request, abort, render_template
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage, ImageSendMessage
@@ -20,6 +20,10 @@ config.read('config.ini')
 line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
 
+#為了使heroku不要睡，定時給予呼喚
+@app.route("/")
+def home():
+    return render_template("home.html")
 
 # 接收 LINE 的資訊
 @app.route("/callback", methods=['POST'])
