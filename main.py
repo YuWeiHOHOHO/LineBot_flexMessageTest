@@ -45,7 +45,7 @@ def handle_message(event):
     if(message == 'profile'):
         FlexMessage = json.load(open('card.json','r',encoding='utf-8'))
         line_bot_api.reply_message(reply_token, TextSendMessage(text='test'))
-        line_bot_api.reply_message(reply_token, FlexSendMessage('profile',FlexMessage))
+        line_bot_api.reply_message(reply_token, FlexSendMessage(alt_text = 'profile',FlexMessage))
     else:
         line_bot_api.reply_message(reply_token, TextSendMessage(text=message))
 
