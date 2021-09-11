@@ -1,4 +1,3 @@
-
 from __future__ import unicode_literals
 import os
 from flask import Flask, request, abort
@@ -36,18 +35,26 @@ def callback():
 
     return 'OK'
 
-# Message event
-@handler.add(MessageEvent)
-def handle_message(event):
-    message_type = event.message.type
-    user_id = event.source.user_id
-    reply_token = event.reply_token
-    message = event.message.text
-    if(message == 'profile'):
-        FlexMessage = json.load(open('card.json','r',encoding='utf-8'))
-        line_bot_api.reply_message(reply_token, FlexSendMessage('profile',FlexMessage))
-    else:
-        line_bot_api.reply_message(reply_token, TextSendMessage(text=message))
+# # Message event
+# @handler.add(MessageEvent)
+# def handle_message(event):
+#     message_type = event.message.type
+#     user_id = event.source.user_id
+#     reply_token = event.reply_token
+#     message = event.message.text
+#     if(message == 'profile'):
+#         FlexMessage = json.load(open('card.json','r',encoding='utf-8'))
+#         line_bot_api.reply_message(reply_token, FlexSendMessage('profile',FlexMessage))
+#     else:
+#         line_bot_api.reply_message(reply_token, TextSendMessage(text=message))
+
+# 學你說話
+@handler.add(MessageEvent, message=TextMessage)
+def echo(event):
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=event.message.text)
+    )
 
 if __name__ == "__main__":
     app.run()
