@@ -97,26 +97,74 @@ def handle_message(event):
     reply_token = event.reply_token
     message = event.message.text
     if(message == 'profile'):
-       #FlexMessage = json.load(open('card.json','r',encoding='utf-8'))
+        #FlexMessage = json.load(open('card.json','r',encoding='utf-8'))
 
-        flex_message = FlexSendMessage(
-         alt_text='hello',
-         contents={
-          'type': 'bubble',
-          'direction': 'ltr',
-          'hero': {
-            'type': 'image',
-            'url': 'https://example.com/cafe.jpg',
-            'size': 'full',
-            'aspectRatio': '20:13',
-            'aspectMode': 'cover',
-            'action': { 'type': 'uri', 'uri': 'http://example.com', 'label': 'label' }
-          }
-         }
+        carousel_template_message = TemplateSendMessage(
+            alt_text='目錄 template',
+            template=CarouselTemplate(
+                columns=[
+                    CarouselColumn(
+                        thumbnail_image_url='https://i.imgur.com/kzi5kKy.jpg',
+                        title='選擇服務',
+                        text='請選擇',
+                        actions=[
+                            MessageAction(
+                                label='開始玩',
+                                text='開始玩'
+                            ),
+                            URIAction(
+                                label='影片介紹 阿肥bot',
+                                uri='https://youtu.be/1IxtWgWxtlE'
+                            ),
+                            URIAction(
+                                label='如何建立自己的 Line Bot',
+                                uri='https://github.com/twtrubiks/line-bot-tutorial'
+                            )
+                        ]
+                    ),
+                    CarouselColumn(
+                        thumbnail_image_url='https://i.imgur.com/DrsmtKS.jpg',
+                        title='選擇服務',
+                        text='請選擇',
+                        actions=[
+                            MessageAction(
+                                label='other bot',
+                                text='imgur bot'
+                            ),
+                            MessageAction(
+                                label='油價查詢',
+                                text='油價查詢'
+                            ),
+                            URIAction(
+                                label='聯絡作者',
+                                uri='https://www.facebook.com/TWTRubiks?ref=bookmarks'
+                            )
+                        ]
+                    ),
+                    CarouselColumn(
+                        thumbnail_image_url='https://i.imgur.com/h4UzRit.jpg',
+                        title='選擇服務',
+                        text='請選擇',
+                        actions=[
+                            URIAction(
+                                label='分享 bot',
+                                uri='https://line.me/R/nv/recommendOA/@vbi2716y'
+                            ),
+                            URIAction(
+                                label='PTT正妹網',
+                                uri='https://ptt-beauty-infinite-scroll.herokuapp.com/'
+                            ),
+                            URIAction(
+                                label='youtube 程式教學分享頻道',
+                                uri='https://www.youtube.com/channel/UCPhn2rCqhu0HdktsFjixahA'
+                            )
+                        ]
+                    )
+                ]
+            )    
         )
-       
-        line_bot_api.reply_message(reply_token, TextSendMessage(text='test'))
-        line_bot_api.reply_message(reply_token, flex_message)
+
+        line_bot_api.reply_message(event.reply_token, carousel_template_message)
         
     else:
         line_bot_api.reply_message(reply_token, TextSendMessage(text=message))
