@@ -98,6 +98,7 @@ def handle_message(event):
     message = event.message.text
     if(message == 'profile'):
         #FlexMessage = json.load(open('card.json','r',encoding='utf-8'))
+        line_bot_api.reply_message(reply_token, TextSendMessage(text='test'))
 
         carousel_template_message = TemplateSendMessage(
             alt_text='目錄 template',
